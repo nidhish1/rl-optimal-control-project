@@ -1,0 +1,27 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.DS_Store
+# Keep compact experiment evidence and checkpoints, not raw replay data.
+data/**
+!data/**/
+!data/**/manifest.json
+runs/*
+!runs/world/
+!runs/ppo/
+!runs/evaluation/
+!runs/forecasts/
+!runs/validation/
+!runs/forecasts-val/
+!runs/demo/
+!runs/demo-mpc/
+!runs/demo-ppo/
+dist/
+build/
+tmp/pdfs/
+report/*.aux
+report/*.log
+report/*.out
+report/*.pdf

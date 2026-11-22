@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dreamnav"
+version = "0.1.0"
+description = "Learned quadcopter dynamics, CEM-MPC navigation, and a matched PPO baseline"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "numpy>=1.26,<3", "scipy>=1.11,<2", "torch>=2.3,<3",
+  "gymnasium>=1.0,<2", "stable-baselines3>=2.4,<3", "pybullet==3.2.7",
+  "matplotlib>=3.8,<4", "pillow>=10", "imageio>=2.34", "imageio-ffmpeg>=0.5",
+  "transforms3d>=0.4", "gym-pybullet-drones @ git+https://github.com/learnsyslab/gym-pybullet-drones.git@781e4340fd1a83d643ae8f874b9ec0172d0a99d3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+dreamnav = "dreamnav.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["dreamnav*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

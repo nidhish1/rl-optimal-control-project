@@ -1,0 +1,16 @@
+{
+  "controller": "mpc",
+  "layout_id": 2000000,
+  "success": true,
+  "collision": false,
+  "timeout": false,
+  "waypoints_reached": 3,
+  "path_length_m": 7.768358828910843,
+  "duration_s": 8.7,
+  "return": 48.141373402954265,
+  "latency_mean_ms": 12.85408717585492,
+  "latency_p95_ms": 13.1957872887142,
+  "deadline_miss_fraction": 0.0,
+  "fallbacks": 0,
+  "training_transitions": 200056
+}

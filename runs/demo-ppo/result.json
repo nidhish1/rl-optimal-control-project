@@ -1,0 +1,16 @@
+{
+  "controller": "ppo",
+  "layout_id": 2000000,
+  "success": true,
+  "collision": false,
+  "timeout": false,
+  "waypoints_reached": 3,
+  "path_length_m": 7.826903865332105,
+  "duration_s": 8.1,
+  "return": 45.716154847161484,
+  "latency_mean_ms": 0.30489554657474344,
+  "latency_p95_ms": 0.3521670587360859,
+  "deadline_miss_fraction": 0.0,
+  "fallbacks": 0,
+  "training_transitions": 200704
+}

@@ -1,0 +1,56 @@
+{
+  "env_config": {
+    "physics_hz": 240,
+    "control_hz": 60,
+    "navigation_hz": 10,
+    "max_steps": 600,
+    "waypoints": 3,
+    "scenario": "sparse",
+    "max_speed_xy": 0.8,
+    "max_speed_z": 0.4,
+    "max_yaw_rate": 0.6,
+    "lidar_range": 5.0,
+    "goal_radius": 0.3,
+    "progress_weight": 5.0,
+    "collision_weight": 20.0,
+    "smoothness_weight": 0.03,
+    "clearance_weight": 0.1,
+    "clearance_distance": 0.3,
+    "time_cost": 0.01,
+    "goal_bonus": 5.0
+  },
+  "mpc_config": {
+    "horizon": 10,
+    "candidates": 128,
+    "elites": 16,
+    "iterations": 4,
+    "discount": 0.99,
+    "min_std": 0.08,
+    "risk_threshold": 0.85
+  },
+  "split": "val",
+  "layout_seed_start": 1000000,
+  "controllers": {
+    "mpc": {
+      "episodes": 5,
+      "success_rate": 1.0,
+      "collision_rate": 0.0,
+      "mean_waypoints": 3.0,
+      "mean_latency_ms": 12.466986721651214,
+      "mean_path_length_success_m": 7.62273248216528,
+      "mean_duration_success_s": 8.76,
+      "training_transitions": 200056
+    },
+    "ppo": {
+      "episodes": 5,
+      "success_rate": 1.0,
+      "collision_rate": 0.0,
+      "mean_waypoints": 3.0,
+      "mean_latency_ms": 0.07853824421283877,
+      "mean_path_length_success_m": 8.205105874136265,
+      "mean_duration_success_s": 8.280000000000001,
+      "training_transitions": 200704
+    }
+  },
+  "note": "One checkpoint/training seed per controller; repeat for training-seed dispersion. Timing excludes rendering."
+}

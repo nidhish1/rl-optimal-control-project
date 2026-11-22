@@ -1,0 +1,54 @@
+{
+  "split": "test",
+  "windows": 256,
+  "horizons": {
+    "1": {
+      "samples": 256,
+      "collision_positives": 0,
+      "collision_brier_score": 0.0003519577414024486,
+      "collision_recall_at_0.5": null,
+      "state_normalized_rmse": 0.29942262396275215,
+      "lidar_rmse": 0.3059371902545412,
+      "persistence_state_normalized_rmse": 0.9078866773965493,
+      "persistence_lidar_rmse": 0.3671154498881744
+    },
+    "5": {
+      "samples": 256,
+      "collision_positives": 0,
+      "collision_brier_score": 0.00116534724834032,
+      "collision_recall_at_0.5": null,
+      "state_normalized_rmse": 0.4039702880747053,
+      "lidar_rmse": 0.40314928993218957,
+      "persistence_state_normalized_rmse": 0.9661012922429558,
+      "persistence_lidar_rmse": 0.46685659390009127
+    },
+    "10": {
+      "samples": 256,
+      "collision_positives": 0,
+      "collision_brier_score": 6.29424942294937e-07,
+      "collision_recall_at_0.5": null,
+      "state_normalized_rmse": 0.36308640156506755,
+      "lidar_rmse": 0.5089575001972365,
+      "persistence_state_normalized_rmse": 0.9503794626093395,
+      "persistence_lidar_rmse": 0.63061254034545
+    },
+    "20": {
+      "samples": 256,
+      "collision_positives": 1,
+      "collision_brier_score": 0.003901719706418702,
+      "collision_recall_at_0.5": 0.0,
+      "state_normalized_rmse": 0.4656108679448053,
+      "lidar_rmse": 0.6105256192695057,
+      "persistence_state_normalized_rmse": 0.995321635318463,
+      "persistence_lidar_rmse": 0.8638369106452464
+    }
+  },
+  "sampling": "Fixed seed 0; same uniformly sampled 20-step windows at every horizon",
+  "one_step_collision_all_transitions": {
+    "transitions": 20010,
+    "positive_transitions": 43,
+    "brier_score": 0.0020438507075172785,
+    "recall_at_0.5": 0.8837209302325582,
+    "precision_at_0.5": 0.40860215053763443
+  }
+}

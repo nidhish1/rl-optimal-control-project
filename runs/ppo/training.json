@@ -1,0 +1,28 @@
+{
+  "env_config": {
+    "physics_hz": 240,
+    "control_hz": 60,
+    "navigation_hz": 10,
+    "max_steps": 600,
+    "waypoints": 3,
+    "scenario": "sparse",
+    "max_speed_xy": 0.8,
+    "max_speed_z": 0.4,
+    "max_yaw_rate": 0.6,
+    "lidar_range": 5.0,
+    "goal_radius": 0.3,
+    "progress_weight": 5.0,
+    "collision_weight": 20.0,
+    "smoothness_weight": 0.03,
+    "clearance_weight": 0.1,
+    "clearance_distance": 0.3,
+    "time_cost": 0.01,
+    "goal_bonus": 5.0
+  },
+  "seed": 0,
+  "requested_transitions": 200000,
+  "train_transitions": 200704,
+  "seconds": 317.7004050000105,
+  "n_envs": 4,
+  "layout_split": "train"
+}

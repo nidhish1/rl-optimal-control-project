@@ -1,0 +1,16 @@
+{
+  "controller": "guided",
+  "layout_id": 2000000,
+  "success": true,
+  "collision": false,
+  "timeout": false,
+  "waypoints_reached": 3,
+  "path_length_m": 7.00857176997423,
+  "duration_s": 13.9,
+  "return": 48.48184588965646,
+  "latency_mean_ms": 0.10218341473034388,
+  "latency_p95_ms": 0.11693332344293593,
+  "deadline_miss_fraction": 0.0,
+  "fallbacks": 0,
+  "training_transitions": null
+}
