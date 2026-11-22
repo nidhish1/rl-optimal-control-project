@@ -23,7 +23,7 @@ def plotting():
 
 
 def validate_config(saved, config):
-    # Missions may vary at evaluation; observation/action/physics/reward semantics may not.
+    # Vary missions, not sensor, action, physics or reward definitions.
     for key, value in config_dict(config).items():
         if key not in {"scenario", "waypoints", "max_steps"} and saved[key] != value:
             raise ValueError(f"Checkpoint/environment mismatch for {key}: {saved[key]} != {value}")
@@ -99,7 +99,7 @@ def run_episode(env, controller, seed, video=None, realtime=False):
             if controller.planner:
                 predictions = controller.planner.last_predictions
                 if predictions is not None:
-                    # Relative goal is in world coordinates; visualization alone uses the true goal location.
+                    # True goal position is used only for visualization.
                     goal = env.goals[env.goal_index]
                     paths = goal - predictions[..., 41:44]
                     starts = np.broadcast_to(info["position"], (len(paths), 1, 3))
@@ -232,8 +232,7 @@ def evaluate_world(checkpoint, data_dir, output, split="test", max_windows=256):
         raise ValueError("Forecast evaluation needs at least one 20-step segment without a goal switch.")
     chosen = np.random.default_rng(0).permutation(len(candidates))[:max_windows]
     windows = len(chosen)
-    # Every horizon uses the same sampled starts, avoiding changing survivor
-    # populations as the forecast horizon grows.
+    # Use matched windows to avoid survivor bias across horizons.
     for index in chosen:
         ep_index, begin, start = candidates[index]
         ep = episodes[ep_index]
@@ -274,8 +273,7 @@ def evaluate_world(checkpoint, data_dir, output, split="test", max_windows=256):
         for key in ["state_normalized_mse", "lidar_mse", "persistence_state_normalized_mse", "persistence_lidar_mse"]:
             numbers = [v[key] for v in values if v[key] is not None]
             summary[str(horizon)][key.replace("mse", "rmse")] = float(np.sqrt(np.mean(numbers))) if numbers else None
-    # Include every terminal collision in a separate one-step diagnostic, not just
-    # those that happen to fall on a sampled forecast horizon.
+    # Count all collisions, including those outside sampled windows.
     all_probs, all_labels = [], []
     for ep in episodes:
         for begin, end in segments(ep):

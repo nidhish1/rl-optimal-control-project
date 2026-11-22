@@ -30,7 +30,7 @@ def batch_loss(model, batch, positive_weight, rollout_steps=0):
     collision_loss = (collision_loss * mask).sum() / mask.sum().clamp_min(1)
     loss = lidar + state + .2 * collision_loss
     if rollout_steps:
-        # Short open-loop training from the same segment, preceded by real-history burn-in.
+        # Warm up recurrent state before the open-loop rollout.
         burn = min(5, obs.shape[1] - 1)
         _, _, hidden = model(obs[:, :burn], actions[:, :burn]) if burn else (None, None, None)
         current = obs[:, burn]
@@ -141,7 +141,6 @@ def train_ppo(config, output, transitions=200_000, seed=0, n_envs=4):
 
     env = DummyVecEnv([lambda index=i: Monitor(TrainingLayouts(index)) for i in range(n_envs)])
     env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
-    # Small budgets are supported for pipeline checks; the actual rounded count is recorded.
     n_steps = max(32, min(1024, transitions // n_envs))
     model = PPO("MlpPolicy", env, policy_kwargs={"net_arch": {"pi": [256, 256], "vf": [256, 256]}},
                 n_steps=n_steps, batch_size=min(64, n_steps * n_envs), learning_rate=3e-4,

@@ -16,7 +16,6 @@ def guided_action(obs, config):
     norm = np.linalg.norm(velocity)
     if norm > .6:
         velocity *= .6 / norm
-    # The rays are body-fixed; rotate their repulsion into the world frame.
     import pybullet as p
     rotation = np.asarray(p.getMatrixFromQuaternion(p.getQuaternionFromEuler(obs[35:38]))).reshape(3, 3)
     rays = lidar_directions() @ rotation.T

@@ -24,7 +24,6 @@ def heading_rotation(yaw):
 
 
 def lidar_directions():
-    # Four elevation rings, eight azimuths each; directions fixed to the body.
     return np.array([[np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)]
                      for e in np.deg2rad([-45, -15, 15, 45])
                      for a in np.arange(8) * np.pi / 4])
@@ -67,8 +66,7 @@ class DreamNavEnv(gym.Env):
 
     def _box(self, center, half, color):
         collision = p.createCollisionShape(p.GEOM_BOX, halfExtents=half, physicsClientId=self.client)
-        # PyBullet may auto-render the collision shape when visual=-1. An explicit
-        # negligible visual keeps the full collision geometry out of the camera.
+        # visual=-1 can render collisions; use a tiny visual to hide walls.
         visual = p.createVisualShape(p.GEOM_SPHERE, radius=1e-5, rgbaColor=[0, 0, 0, 0], physicsClientId=self.client) if color is None else p.createVisualShape(p.GEOM_BOX, halfExtents=half, rgbaColor=color, physicsClientId=self.client)
         return p.createMultiBody(0, collision, visual, basePosition=center, physicsClientId=self.client)
 
@@ -104,11 +102,9 @@ class DreamNavEnv(gym.Env):
         self.candidate_paths = []
         self.obstacles = []
         self._debug_lines = []
-        # A closed 8 x 6 x 3 m room, with the simulator's ground plane as floor.
         for center, half in [([0, -3, 1.5], [4, .06, 1.5]), ([0, 3, 1.5], [4, .06, 1.5]),
                              ([-4, 0, 1.5], [.06, 3, 1.5]), ([4, 0, 1.5], [.06, 3, 1.5]),
                              ([0, 0, 3], [4, 3, .06])]:
-            # Collision-only walls/ceiling keep the overview camera unobstructed.
             self._box(center, half, None)
         self._box([0, 0, -.035], [4, 3, .03], [.78, .84, .89, 1])
         route = np.vstack([self.start, self.goals])
@@ -118,7 +114,7 @@ class DreamNavEnv(gym.Env):
             attempts += 1
             half = rng.uniform([.15, .2, .35], [.4, .5, 1.1])
             center = np.array([rng.uniform(-2.7, 2.7), rng.uniform(-2.3, 2.3), half[2]])
-            # Reserve a tube along a known feasible route, including altitude changes.
+            # Keep a clear route between waypoints.
             if min(segment_distance(center, a, b) for a, b in zip(route[:-1], route[1:])) < np.linalg.norm(half) + .25:
                 continue
             self._box(center, half, [.24, .34, .44, 1])
@@ -135,7 +131,7 @@ class DreamNavEnv(gym.Env):
         state = self._state()
         rotation = np.asarray(p.getMatrixFromQuaternion(state[3:7])).reshape(3, 3)
         directions = self.rays @ rotation.T
-        # Start rays just outside the drone's collision envelope to avoid self-hits.
+        # Start outside the drone to avoid self-hits.
         origin = state[:3] + directions * .09
         end = state[:3] + directions * self.config.lidar_range
         hits = p.rayTestBatch(origin.tolist(), end.tolist(), physicsClientId=self.client)
@@ -196,7 +192,7 @@ class DreamNavEnv(gym.Env):
         truncated = bool(self.steps >= cfg.max_steps and not terminated)
         self.done = terminated or truncated
         info = self._info(collision, success)
-        # Keep the prediction target tied to the OLD goal. A goal switch is exogenous.
+        # Predict against the old goal; switching goals is not drone motion.
         info.update(model_next_observation=model_next, goal_changed=reached and not success, goal_progress=progress)
         return self._observation(), float(reward), terminated, truncated, info
 

@@ -47,7 +47,7 @@ class CEMPlanner:
             prediction, logits, hidden = self.model.step(obs, actions[:, k], hidden)
             risk = torch.sigmoid(logits)
             finite = torch.isfinite(prediction).all(-1) & torch.isfinite(risk)
-            # Reject impossible single-tick jumps, rather than rewarding model exploitation.
+            # Reject implausible forecasts that could inflate the score.
             plausible = ((prediction[:, 41:44] - obs[:, 41:44]).norm(dim=-1) < .6)
             plausible &= (prediction[:, 32:35].norm(dim=-1) < 4)
             plausible &= (prediction[:, :32].min(-1).values > -.25)
@@ -61,7 +61,7 @@ class CEMPlanner:
             reward = (cfg.progress_weight * progress - cfg.collision_weight * risk
                       - cfg.smoothness_weight * smoothness - cfg.clearance_weight * clearance - cfg.time_cost)
             score += self.config.discount ** k * survival * reward
-            # Stop accruing imagined progress after predicted arrival or collision.
+            # Stop scoring progress after arrival or collision.
             arrived = prediction[:, 41:44].norm(dim=-1) < cfg.goal_radius
             score += self.config.discount ** k * survival * cfg.goal_bonus * arrived
             survival *= (1 - risk) * (~arrived)
@@ -87,7 +87,7 @@ class CEMPlanner:
             noise = torch.randn((cfg.candidates, cfg.horizon, 4), generator=self.generator, device=self.device)
             actions = (mean + std * noise).clamp(-1, 1)
             actions[0] = mean.clamp(-1, 1)
-            actions[1].zero_()  # Always evaluate a braking/hover candidate.
+            actions[1].zero_()  # Include a hover candidate.
             scores, predictions, risks = self._rollout(obs, actions)
             valid_count = int(torch.isfinite(scores).sum())
             if valid_count == 0:

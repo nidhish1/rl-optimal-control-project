@@ -86,8 +86,7 @@ def test_forecasts_use_matched_windows_and_count_short_collision_episodes(tmp_pa
 
     directory = tmp_path / "data/test"
     directory.mkdir(parents=True)
-    # One long episode contributes forecast windows. A short collision episode
-    # must still contribute to the all-transition collision metric.
+    # Short episodes must still count toward collision metrics.
     for index, length in enumerate([45, 7]):
         obs = np.ones((length, 44), dtype=np.float32)
         collision = np.zeros(length, dtype=bool)

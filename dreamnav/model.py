@@ -20,7 +20,7 @@ class GRUWorldModel(nn.Module):
         encoded = self.encoder((observations - self.mean) / self.std)
         features, hidden = self.gru(torch.cat([encoded, actions], dim=-1), hidden)
         prediction = observations + self.delta(features) * self.std
-        # Preserve the 44D interface while respecting angular periodicity.
+        # Keep Euler angles in [-pi, pi].
         angles = torch.atan2(torch.sin(prediction[..., 35:38]), torch.cos(prediction[..., 35:38]))
         prediction = torch.cat([prediction[..., :35], angles, prediction[..., 38:]], dim=-1)
         return prediction, self.collision(features).squeeze(-1), hidden
